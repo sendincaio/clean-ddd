@@ -21,12 +21,13 @@ describe('Comment On Question', () => {
 
         await questionsRepository.create(newQuestion)
 
-        await commentOnQuestion.execute({
+        const result = await commentOnQuestion.execute({
             content: 'Question comment',
             authorId: newQuestion.authorId.toString(),
             questionId: newQuestion.id.toString(),
         })
 
+        expect(result.isRight()).toBe(true)
         expect(questionCommentsRepository.items[0].content).toEqual('Question comment')
     })
 })

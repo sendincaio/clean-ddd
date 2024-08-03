@@ -12,13 +12,13 @@ describe('Create Question', () => {
     })
 
     it('should be able to create a question', async () => {
-        const { question } = await createQuestion.execute({
+        const result = await createQuestion.execute({
             title: 'Question Title',
             content: 'Question Content',
             authorId: 'author-01',
         })
 
-        expect(question.id).toBeTruthy()
-        expect(questionsRepository.items[0].id).toEqual(question.id)
+        expect(result.isRight()).toBe(true)
+        expect(questionsRepository.items[0]).toEqual(result.value?.question)
     })
 })

@@ -1,4 +1,6 @@
+import { Either, left, right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
+import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 
 import { AnswerComment } from '../../enterprise/entities/answer-comment'
 import { AnswerCommentsRepository } from '../repositories/answer-comments-repository'
@@ -10,9 +12,12 @@ interface CommentOnAnswerUseCaseRequest {
     answerId: string
 }
 
-interface CommentOnAnswerUseCaseResponse {
-    answerComment: AnswerComment
-}
+type CommentOnAnswerUseCaseResponse = Either<
+    ResourceNotFoundError,
+    {
+        answerComment: AnswerComment
+    }
+>
 
 export class CommentOnAnswerUseCase {
     constructor(
@@ -28,7 +33,7 @@ export class CommentOnAnswerUseCase {
         const answer = await this.answersRepository.findById(answerId)
 
         if (!answer) {
-            throw new Error('Resource not found')
+            return left(new ResourceNotFoundError())
         }
 
         const answerComment = AnswerComment.create({
@@ -39,6 +44,6 @@ export class CommentOnAnswerUseCase {
 
         await this.answerCommentsRepository.create(answerComment)
 
-        return { answerComment }
+        return right({ answerComment })
     }
 }

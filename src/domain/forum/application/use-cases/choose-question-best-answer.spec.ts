@@ -4,6 +4,7 @@ import { InMemoryAnswersRepository } from 'test/repositories/in-memory-answers-r
 import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questions-repository'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
+import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 
 import { ChooseQuestionBestAnswerUseCase } from './choose-question-best-answer'
 
@@ -49,11 +50,12 @@ describe('Choose Question Best Answer', () => {
         await questionsRepository.create(newQuestion)
         await answersRepository.create(newAnswer)
 
-        expect(() => {
-            return chooseQuestionBestAnswer.execute({
-                authorId: 'author-02',
-                answerId: newAnswer.id.toString(),
-            })
-        }).rejects.toBeInstanceOf(Error)
+        const result = await chooseQuestionBestAnswer.execute({
+            authorId: 'author-02',
+            answerId: newAnswer.id.toString(),
+        })
+
+        expect(result.isLeft()).toBe(true)
+        expect(result.value).toBeInstanceOf(NotAllowedError)
     })
 })

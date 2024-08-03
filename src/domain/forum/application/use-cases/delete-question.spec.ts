@@ -2,6 +2,7 @@ import { makeQuestion } from 'test/factories/make-question'
 import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questions-repository'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
+import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 
 import { DeleteQuestionUseCase } from './delete-question'
 
@@ -42,11 +43,12 @@ describe('Delete Question', () => {
 
         await questionsRepository.create(newQuestion)
 
-        expect(() => {
-            return deleteQuestion.execute({
-                authorId: 'author-02',
-                questionId: 'question-01',
-            })
-        }).rejects.toBeInstanceOf(Error)
+        const result = await deleteQuestion.execute({
+            authorId: 'author-02',
+            questionId: 'question-01',
+        })
+
+        expect(result.isLeft()).toBe(true)
+        expect(result.value).toBeInstanceOf(NotAllowedError)
     })
 })

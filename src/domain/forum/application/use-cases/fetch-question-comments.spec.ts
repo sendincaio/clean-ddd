@@ -19,12 +19,12 @@ describe('Fetch Question Comments', () => {
         await questionCommentsRepository.create(makeQuestionComment({ questionId: new UniqueEntityId('question-01') }))
         await questionCommentsRepository.create(makeQuestionComment({ questionId: new UniqueEntityId('question-01') }))
 
-        const { questionComments } = await fetchQuestionComments.execute({
+        const result = await fetchQuestionComments.execute({
             questionId: 'question-01',
             page: 1,
         })
 
-        expect(questionComments).toHaveLength(3)
+        expect(result.value?.questionComments).toHaveLength(3)
     })
 
     it('should be able to fetch paginated question comments', async () => {
@@ -36,11 +36,11 @@ describe('Fetch Question Comments', () => {
             )
         }
 
-        const { questionComments } = await fetchQuestionComments.execute({
+        const result = await fetchQuestionComments.execute({
             questionId: 'question-01',
             page: 2,
         })
 
-        expect(questionComments).toHaveLength(5)
+        expect(result.value?.questionComments).toHaveLength(5)
     })
 })

@@ -20,11 +20,11 @@ describe('Get Question By Slug', () => {
 
         await questionsRepository.create(newQuestion)
 
-        const { question } = await getQuestionBySlug.execute({
+        const result = await getQuestionBySlug.execute({
             slug: 'question-title',
         })
 
-        expect(question.id).toBeTruthy()
-        expect(question.title).toEqual(newQuestion.title)
+        expect(result.isRight()).toBe(true)
+        expect(questionsRepository.items[0].title).toEqual(newQuestion.title)
     })
 })

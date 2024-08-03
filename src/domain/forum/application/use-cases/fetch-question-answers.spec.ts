@@ -21,12 +21,12 @@ describe('Fetch Question Answers', () => {
         await answersRepository.create(makeAnswer({ questionId: new UniqueEntityId('question-02') }))
         await answersRepository.create(makeAnswer({ questionId: new UniqueEntityId('question-03') }))
 
-        const { answers } = await fetchQuestionAnswers.execute({
+        const result = await fetchQuestionAnswers.execute({
             questionId: 'question-01',
             page: 1,
         })
 
-        expect(answers).toHaveLength(3)
+        expect(result.value?.answers).toHaveLength(3)
     })
 
     it('should be able to fetch paginated question answers', async () => {
@@ -38,11 +38,11 @@ describe('Fetch Question Answers', () => {
             )
         }
 
-        const { answers } = await fetchQuestionAnswers.execute({
+        const result = await fetchQuestionAnswers.execute({
             questionId: 'question-01',
             page: 2,
         })
 
-        expect(answers).toHaveLength(5)
+        expect(result.value?.answers).toHaveLength(5)
     })
 })
